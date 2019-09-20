@@ -36,6 +36,7 @@ export default class App extends React.Component {
           }}
         </RemainingCharacters>
         <div>
+          <h1>Title: {this.state.title}</h1>
           <InlineEdit value={this.state.title} onEnter={this.handleTitleUpdate} />
         </div>
       </div>

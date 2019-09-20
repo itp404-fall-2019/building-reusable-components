@@ -1,12 +1,14 @@
 import React from 'react';
 import './App.css';
 import RemainingCharacters from "./RemainingCharacters";
+import InlineEdit from "./InlineEdit";
 
 export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      name: ""
+      name: "",
+      title: "USC"
     };
   }
   handleChange = event => {
@@ -30,6 +32,9 @@ export default class App extends React.Component {
             );
           }}
         </RemainingCharacters>
+        <div>
+          <InlineEdit value={this.state.title} />
+        </div>
       </div>
     );
   }

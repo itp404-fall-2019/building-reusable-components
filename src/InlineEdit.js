@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
 const ESCAPE_KEY = 27;
 const ENTER_KEY = 13;
@@ -56,3 +57,8 @@ export default class InlineEdit extends React.Component {
     );
   }
 }
+
+InlineEdit.propTypes = {
+  value: PropTypes.string.isRequired,
+  onEnter: PropTypes.func.isRequired
+};

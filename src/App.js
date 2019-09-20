@@ -1,26 +1,26 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import RemainingCharacters from "./RemainingCharacters";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: ""
+    };
+  }
+  handleChange = event => {
+    this.setState({
+      name: event.target.value
+    });
+  };
+  render() {
+    return (
+      <div className="App">
+        <input value={this.state.name} onChange={this.handleChange} />
+        <br />
+        <RemainingCharacters text={this.state.name} max={10} />
+      </div>
+    );
+  }
 }
-
-export default App;

@@ -18,7 +18,7 @@ export default class InlineEdit extends React.Component {
       currentValue: event.target.value
     });
   };
-  handleKeyDown = event => {
+  handleKeyUp = event => {
     const { keyCode } = event;
     const { currentValue, previousValue } = this.state;
 
@@ -37,14 +37,20 @@ export default class InlineEdit extends React.Component {
     this.setState({ editMode: true });
   };
   render() {
-    const { editMode } = this.state;
+    const { editMode, currentValue } = this.state;
 
+    if (this.props.children) {
+      return this.props.children(
+        editMode, currentValue, this.handleKeyUp, this.handleChange, this.enableEditMode
+      );  
+    }
+    
     if (editMode) {
       return (
         <input
           type="text"
           value={this.state.currentValue}
-          onKeyUp={this.handleKeyDown}
+          onKeyUp={this.handleKeyUp}
           onChange={this.handleChange}
         />
       );

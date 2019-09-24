@@ -38,6 +38,31 @@ export default class App extends React.Component {
         <div>
           <h1>Title: {this.state.title}</h1>
           <InlineEdit value={this.state.title} onEnter={this.handleTitleUpdate} />
+          <br />
+          <InlineEdit 
+            value={this.state.title}
+            onEnter={this.handleTitleUpdate}>
+            {
+              (editMode, currentValue, handleKeyUp, handleChange, enableEditMode) => {
+                if (editMode) {
+                  return (
+                    <input
+                      type="text"
+                      value={currentValue}
+                      onKeyUp={handleKeyUp}
+                      onChange={handleChange}
+                    />
+                  );
+                }
+            
+                return (
+                  <span onClick={enableEditMode}>
+                    {currentValue}
+                  </span>
+                );
+              }
+            }
+          </InlineEdit>
         </div>
       </div>
     );

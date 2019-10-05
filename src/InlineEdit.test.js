@@ -1,35 +1,41 @@
 import React from "react";
-import { render, fireEvent } from "@testing-library/react";
+import { render, fireEvent, queryByTestId } from "@testing-library/react";
 import InlineEdit from "./InlineEdit";
 import "@testing-library/jest-dom/extend-expect";
 
-it("renders the value as text", () => {
-  const { container } = render(
+it("renders the value as text and not an input", () => {
+  const { getByTestId, queryByTestId } = render(
     <InlineEdit value={"Untitled Document"} onEnter={() => {}} />
   );
 
-  expect(container.textContent).toBe("Untitled Document");
-});
-
-it("changes to an input when clicked", () => {
-  let title = "Untitled Document";
-  const { container, getByText } = render(
-    <InlineEdit value={title} onEnter={() => {}} />
+  // expect(getByTestId("inline-edit-text").textContent).toBe("Untitled Document");
+  expect(getByTestId("inline-edit-text")).toHaveTextContent(
+    "Untitled Document"
   );
-  fireEvent.click(getByText("Untitled Document"));
-  expect(container.querySelector("input")).toHaveValue("Untitled Document");
+  expect(queryByTestId("inline-edit-input")).toBeFalsy();
 });
 
-it("updates to the new value when enter is pressed", () => {
-  let title = "Untitled Document";
-  let updateTitle = newTitle => (title = newTitle);
-
-  const { container, getByText } = render(
-    <InlineEdit value={title} onEnter={updateTitle} />
+it("changes from text to an input when the text is clicked", () => {
+  const { getByText, getByTestId, queryByTestId } = render(
+    <InlineEdit value={"Untitled Document"} onEnter={() => {}} />
   );
 
   fireEvent.click(getByText("Untitled Document"));
-  const input = container.querySelector("input");
+
+  // expect(getByTestId("inline-edit-input").value).toBe("Untitled Document");
+  expect(getByTestId("inline-edit-input")).toHaveValue("Untitled Document");
+  expect(queryByTestId("inline-edit-text")).toBeFalsy();
+});
+
+it("calls onEnter with the new value when enter is pressed", () => {
+  let onEnterHandler = jest.fn();
+
+  const { getByTestId, getByText } = render(
+    <InlineEdit value={"Untitled Document"} onEnter={onEnterHandler} />
+  );
+
+  fireEvent.click(getByText("Untitled Document"));
+  const input = getByTestId("inline-edit-input");
 
   fireEvent.change(input, {
     target: {
@@ -41,18 +47,18 @@ it("updates to the new value when enter is pressed", () => {
     keyCode: 13
   });
 
-  expect(title).toBe("USC");
+  expect(onEnterHandler).toHaveBeenCalledWith("USC");
 });
 
-it("does not update to the new value when escape is pressed", () => {
-  let title = "Untitled Document";
-  let updateTitle = newTitle => (title = newTitle);
-  const { container, getByText } = render(
-    <InlineEdit value={title} onEnter={updateTitle} />
+it("does not call onEnter when the escape key is pressed", () => {
+  let onEnterHandler = jest.fn();
+
+  const { getByText, getByTestId } = render(
+    <InlineEdit value={"Untitled Document"} onEnter={onEnterHandler} />
   );
 
   fireEvent.click(getByText("Untitled Document"));
-  const input = container.querySelector("input");
+  const input = getByTestId("inline-edit-input");
 
   fireEvent.change(input, {
     target: {
@@ -64,5 +70,32 @@ it("does not update to the new value when escape is pressed", () => {
     keyCode: 27
   });
 
-  expect(title).toBe("Untitled Document");
+  expect(onEnterHandler).toHaveBeenCalledTimes(0);
+});
+
+it("renders text when the escape key is pressed", () => {
+  let onEnterHandler = jest.fn();
+
+  const { getByText, getByTestId, queryByTestId } = render(
+    <InlineEdit value={"Untitled Document"} onEnter={onEnterHandler} />
+  );
+
+  fireEvent.click(getByText("Untitled Document"));
+  const input = getByTestId("inline-edit-input");
+
+  fireEvent.change(input, {
+    target: {
+      value: "USC"
+    }
+  });
+
+  fireEvent.keyUp(input, {
+    keyCode: 27
+  });
+
+  // expect(getByTestId("inline-edit-text").textContent).toBe("Untitled Document");
+  expect(getByTestId("inline-edit-text")).toHaveTextContent(
+    "Untitled Document"
+  );
+  expect(queryByTestId("inline-edit-input")).toBeFalsy();
 });

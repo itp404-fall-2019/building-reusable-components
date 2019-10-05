@@ -1,6 +1,7 @@
 import React from "react";
 import { render, fireEvent } from "@testing-library/react";
 import InlineEdit from "./InlineEdit";
+import "@testing-library/jest-dom/extend-expect";
 
 it("renders the value as text", () => {
   const { container } = render(
@@ -16,7 +17,7 @@ it("changes to an input when clicked", () => {
     <InlineEdit value={title} onEnter={() => {}} />
   );
   fireEvent.click(getByText("Untitled Document"));
-  expect(container.querySelector("input").value).toBe("Untitled Document");
+  expect(container.querySelector("input")).toHaveValue("Untitled Document");
 });
 
 it("updates to the new value when enter is pressed", () => {

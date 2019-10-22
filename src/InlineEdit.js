@@ -7,6 +7,7 @@ export default class InlineEdit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      previousValue: props.value,
       currentValue: props.value,
       editMode: false
     };
@@ -16,11 +17,19 @@ export default class InlineEdit extends React.Component {
       currentValue: event.target.value
     });
   };
-  handleKeyUp = event => {
+  handleKeyDown = event => {
     const { keyCode } = event;
+    const { currentValue, previousValue } = this.state;
 
     if (keyCode === ENTER_KEY || keyCode === ESCAPE_KEY) {
       this.setState({ editMode: false });
+    }
+
+    if (keyCode === ENTER_KEY) {
+      this.setState({ previousValue: currentValue });
+      this.props.onEnter(currentValue);
+    } else if (keyCode === ESCAPE_KEY) {
+      this.setState({ currentValue: previousValue });
     }
   };
   enableEditMode = () => {
@@ -34,7 +43,7 @@ export default class InlineEdit extends React.Component {
         <input
           type="text"
           value={this.state.currentValue}
-          onKeyUp={this.handleKeyUp}
+          onKeyUp={this.handleKeyDown}
           onChange={this.handleChange}
         />
       );

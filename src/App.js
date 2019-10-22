@@ -16,6 +16,9 @@ export default class App extends React.Component {
       name: event.target.value
     });
   };
+  handleTitleUpdate = newTitle => {
+    this.setState({ title: newTitle });
+  };
   render() {
     return (
       <div className="App">
@@ -33,7 +36,8 @@ export default class App extends React.Component {
           }}
         </RemainingCharacters>
         <div>
-          <InlineEdit value={this.state.title} />
+          <h1>Title: {this.state.title}</h1>
+          <InlineEdit value={this.state.title} onEnter={this.handleTitleUpdate} />
         </div>
       </div>
     );
